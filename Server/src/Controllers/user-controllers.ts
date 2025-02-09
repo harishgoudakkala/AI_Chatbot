@@ -18,6 +18,7 @@ export const userSignup = async (req: Request, res: Response, next: NextFunction
     try{
         const { name, email, password } = req.body;
         const existingUser = await User.findOne({ email: email});
+        //console.log(existingUser)
         if(existingUser) return res.status(401).json({message: "User already exists"})
         const hashedPassword = await hash(password, 10);
         const user = new User({ name, email, password: hashedPassword });
@@ -29,8 +30,7 @@ export const userSignup = async (req: Request, res: Response, next: NextFunction
             httpOnly: true,
             signed: true
         })
-        
-        const token = createToken(existingUser._id.toString(), existingUser.email, "7d");
+        const token = createToken(user._id.toString(), user.email, "7d");
         const expires = new Date();
         expires.setDate(expires.getDate() + 7);                                                                                       
         res.cookie(COOKIE_NAME, token, {path: "/", domain: "localhost", expires, httpOnly: true, signed: true});
