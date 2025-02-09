@@ -49,3 +49,30 @@ export const generateChat = async (req: Request, res: Response, next: NextFuncti
         return res.status(500).json({ message: "Something went wrong", error });
     }
 };
+
+
+export const getAllChats =  async (req: Request, res:Response, next:NextFunction) => {
+    try {
+        const user = await User.findById(res.locals.jwtData.id);
+        if(!user) return res.status(401).json({message: "User not found"});
+        if(user._id.toString() !== res.locals.jwtData.id) return res.status(401).json({message: "Permission denied"});
+        return res.status(200).json({message: "OK", chats: user.chats})
+    } catch (error) {
+        console.log(error);
+        return res.status(401).json({message: "User verification failed"});
+    }
+}
+export const deleteChats =  async (req: Request, res:Response, next:NextFunction) => {
+    try {
+        const user = await User.findById(res.locals.jwtData.id);
+        if(!user) return res.status(401).json({message: "User not found"});
+        if(user._id.toString() !== res.locals.jwtData.id) return res.status(401).json({message: "Permission denied"});
+        //@ts-ignore
+        user.chats = [];
+        await user.save();
+        return res.status(200).json({message: "OK"})
+    } catch (error) {
+        console.log(error);
+        return res.status(401).json({message: "User verification failed"});
+    }
+}

@@ -1,10 +1,12 @@
 import { Avatar, Box, Button, IconButton, Typography } from '@mui/material'
 import { IoMdSend } from 'react-icons/io'
 import red from '@mui/material/colors/red'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { useAuth } from '../context/AuthContext'
 import ChatItem from '../components/chat/ChatItem'
-import { sendChatReq } from '../helpers/api-communicator'
+import { deleteChats, getChats, sendChatReq } from '../helpers/api-communicator'
+import { useNavigate } from 'react-router-dom'
+import toast from 'react-hot-toast'
 // const chatMessages = [
 //   {
 //     "role": "assistant",
@@ -49,6 +51,7 @@ type Message = {
 }
 
 const Chat = () => {
+  const navigate = useNavigate()
   const auth = useAuth()
   const inputref = useRef<HTMLInputElement | null>(null);
   const [chatMessages, setChatMessages] = useState<Message[]>([]);
@@ -62,11 +65,43 @@ const Chat = () => {
     const chatData = await sendChatReq(content);
     setChatMessages((prev)=> [...prev, {role:"assistant", content:chatData?.chatResponse}]);
   }
+
+  const handleDelete = async () => {
+    try{
+      toast.loading("Deleting...", {id:"deleteChats"});
+      await deleteChats();
+      setChatMessages([]);
+      toast.success("Chat history deleted successfully", {id:"deleteChats"})
+    }catch(err){
+      console.log(err);
+      toast.error("Failed to delete chat history", {id:"deleteChats"})
+    }
+  }
+
+  useEffect(() => {
+    if(!auth?.user) {
+       navigate('/login');
+    }
+  },[auth])
+
+  useLayoutEffect(() => {
+    if(auth?.isLoggedIn && auth.user) {
+      toast.loading("loading...", {id:"loadChats"})
+      getChats().then((data) =>{
+        setChatMessages([...data.chats]);
+        toast.success("sucessfully loaded chats", {id:"loadChats"})
+      }).catch((error) => {
+        console.log(error);
+        toast.error("Failed to load chats", {id:"loadChats"})
+      })
+    }
+  },[auth])
+
   return (
    <Box sx={{display:"flex", flex:1, width:'100%', height:"100%", mt:3, gap:3}}>
       <Box sx={{display:{md:"flex", xs:"none", sm:"none"}, flex:0.2, flexDirection:"column" }}>
         <Box sx={{display:"flex", width:"100%", height:"60vh",bgcolor:"rgb(17,29,39)", borderRadius:5, flexDirection:"column", mx:3}}>
-            <Avatar sx={{mx:"auto", my:"2", bgcolor:'white', color:'black', fontWeight:700}}>{auth?.user?.name[0] }{auth?.user?.name.split(" ")[1][0]}</Avatar>
+            <Avatar sx={{mx:"auto", my:"2", bgcolor:'white', color:'black', fontWeight:700}}>{ auth?.user?.name?.[0] }{auth?.user?.name?.split(" ")[1]?.[0]}</Avatar>
             <Typography sx={{mx:"auto", fontFamily:"work sans"}}> You are talking to a Chat bot</Typography>
             <Typography sx={{mx:"auto", fontFamily:"work sans", my:4, p:3}}> You can ask some questions related to Knowledge, Business, Advices, Education, Etc. But avoid sharing your personal information</Typography>
           <Button sx={{
@@ -81,7 +116,9 @@ const Chat = () => {
               bgcolor:red.A200,
               cursor:"pointer"
             }
-          }}> Clear Converstion</Button>
+          }}
+          onClick={handleDelete}
+          > Clear Converstion</Button>
         </Box>
       </Box>
       <Box sx={{display:"flex", flex:{md:0.8, xs:1, sm:1}, flexDirection:"column", px:3 }}>

@@ -79,3 +79,22 @@ export const verifyUser =  async (req: Request, res:Response, next:NextFunction)
         return res.status(401).json({message: "User verification failed"});
     }
 }
+
+export const logoutUser =  async (req: Request, res:Response, next:NextFunction) => {
+    try {
+        const user = await User.findById(res.locals.jwtData.id);
+        if(!user) return res.status(401).json({message: "User not found"});
+        if(user._id.toString() !== res.locals.jwtData.id) return res.status(401).json({message: "Permission denied"});
+        res.clearCookie(COOKIE_NAME,{
+            httpOnly: true,
+            path: "/",
+            domain: "localhost",
+            secure: false,
+            sameSite: "lax"
+        })
+        return res.status(200).json({message: "OK"});
+    } catch (error) {
+        console.log(error);
+        return res.status(401).json({message: "User verification failed"});
+    }
+}
