@@ -9,7 +9,7 @@ const Home = () => {
     <Box width={"100%"} height={"100%"} flex={'flex'} mx={"auto"} >
       <Box sx={{width:'100%', display: 'flex', flexDirection: 'column', alignItems: 'center', mx: 'auto'}}>
       <Box><Typing/></Box>
-      <Box sx={{width:"100%", display:"flex", flexDirection:{md:"row", xs:"column", sm:"column"}, gap:5, my:10}}>
+      <Box sx={{width:"100%", display:"flex", flexDirection:{md:"row", xs:"column", sm:"column"}, gap:5, my:6}}>
         <img src='robot.png' alt= "robot" style={{width:"300px", margin:"auto"}}/>
         <img src='gemini.png' alt= "gemini" style={{width:"150px", margin:"auto"}}/>
 
