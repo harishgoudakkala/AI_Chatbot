@@ -1,5 +1,4 @@
 import { Avatar, Box, IconButton, Tooltip } from "@mui/material";
-import React, { useState } from "react";
 import { useAuth } from "../../context/AuthContext";
 
 import ReactMarkdown from "react-markdown";

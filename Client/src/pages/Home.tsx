@@ -1,5 +1,4 @@
 import { Box, useMediaQuery, useTheme } from '@mui/material'
-import React from 'react'
 import Typing from '../components/typer/Typing'
 
 const Home = () => {

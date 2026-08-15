@@ -1,4 +1,3 @@
-import React from 'react'
 import { AppBar } from '@mui/material'
 import {Toolbar} from '@mui/material'
 import Logo from "./shared/Logo"
