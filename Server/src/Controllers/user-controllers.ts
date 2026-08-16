@@ -10,7 +10,7 @@ export const getAllUsers = async(req: Request, res: Response, next: NextFunction
         return res.status(200).json({message: "OK", users})
     }catch (err) {
         console.log(err);
-        return res.status(400).json({message: "ERROR", cause: err.message})
+        return res.status(400).json({message: "ERROR",  cause: err instanceof Error ? err.message : "Unknown error"})
     }
 }
 
@@ -43,7 +43,7 @@ export const userSignup = async (req: Request, res: Response, next: NextFunction
         return res.status(201).json({message: "User created successfully", user})
     }catch (err) {
         console.log(err);
-        return res.status(400).json({message: "ERROR", cause: err.message})
+        return res.status(400).json({message: "ERROR",  cause: err instanceof Error ? err.message : "Unknown error"})
     }
 }
 
@@ -79,7 +79,7 @@ export const userLogin = async (req: Request, res: Response, next: NextFunction)
         return res.status(200).json({message: "Logged in successfully", user: existingUser})
     }catch(err){
         console.log(err);
-        return res.status(400).json({message: "ERROR", cause: err.message})
+        return res.status(400).json({message: "ERROR",  cause: err instanceof Error ? err.message : "Unknown error"})
     }
 }
 

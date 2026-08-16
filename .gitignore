@@ -2,3 +2,50 @@ Client/node_modules
 Server/node_modules
 Server/.env
 Server/dist
+# Dependencies
+node_modules/
+**/node_modules/
+
+# Environment variables / secrets
+.env
+.env.*
+!.env.example
+
+# Production builds
+dist/
+**/dist/
+
+# Logs
+*.log
+logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Vite
+.vite/
+
+# Coverage
+coverage/
+
+# TypeScript
+*.tsbuildinfo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# VS Code
+.vscode/
+!.vscode/settings.json
+
+# Local IDE files
+.idea/
+
+# Temporary files
+*.tmp
+*.temp
+
+# Netlify
+.netlify/
