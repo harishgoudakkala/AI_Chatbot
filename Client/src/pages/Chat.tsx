@@ -263,6 +263,58 @@ const Chat = () => {
         }}
       >
         {/* SIDEBAR HEADER */}
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            mb: 4,
+          }}
+        >
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              gap: 1.5,
+            }}
+          >
+            <Box
+              sx={{
+                width: 38,
+                height: 38,
+                borderRadius: 2,
+                bgcolor: "#fff",
+                color: "#111",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontWeight: 800,
+                fontSize: 18,
+              }}
+            >
+              AI
+            </Box>
+
+            <Typography
+              sx={{
+                fontSize: 20,
+                fontWeight: 700,
+              }}
+            >
+              AI-Chatbot
+            </Typography>
+          </Box>
+
+          <IconButton
+            onClick={() => setMobileSidebar(false)}
+            sx={{
+              color: "#aaa",
+              display: { xs: "flex", md: "none" },
+            }}
+          >
+            <IoMdClose />
+          </IconButton>
+        </Box>
 
         {/* USER */}
         <Box
