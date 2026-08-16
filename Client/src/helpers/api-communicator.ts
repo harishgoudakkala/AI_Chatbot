@@ -19,8 +19,9 @@ export const signupUser = async (name:string, email:string, password:string) => 
     return data;
 }
 
-export const logoutUser = async () => {
-    const res = await axios.get("/user/logout");
+export const logoutUser = async (e: React.MouseEvent) => {
+    e.preventDefault()
+    const res = await axios.post("/user/logout");
     if(res.status!=200) {
         throw new Error("Unalble to logout");
     }
