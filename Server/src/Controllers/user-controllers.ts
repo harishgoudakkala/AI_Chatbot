@@ -24,16 +24,21 @@ export const userSignup = async (req: Request, res: Response, next: NextFunction
         const user = new User({ name, email, password: hashedPassword });
         await user.save();
         
-        res.clearCookie(COOKIE_NAME, {
-            path: "/",
-            domain: "localhost",
-            httpOnly: true,
-            signed: true
-        })
         const token = createToken(user._id.toString(), user.email, "7d");
+
         const expires = new Date();
-        expires.setDate(expires.getDate() + 7);                                                                                       
-        res.cookie(COOKIE_NAME, token, {path: "/", domain: "localhost", expires, httpOnly: true, signed: true});
+        expires.setDate(expires.getDate() + 7);
+
+        const isProduction = process.env.NODE_ENV === "production";
+
+        res.cookie(COOKIE_NAME, token, {
+            path: "/",
+            httpOnly: true,
+            secure: isProduction,
+            sameSite: isProduction ? "none" : "lax",
+            expires,
+            signed: true,
+        });
 
         return res.status(201).json({message: "User created successfully", user})
     }catch (err) {
@@ -52,15 +57,25 @@ export const userLogin = async (req: Request, res: Response, next: NextFunction)
 
         res.clearCookie(COOKIE_NAME, {
             path: "/",
-            domain: "localhost",
             httpOnly: true,
-            signed: true
-        })
+            secure: process.env.NODE_ENV === "production",
+            sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+            signed: true,
+        });
         
         const token = createToken(existingUser._id.toString(), existingUser.email, "7d");
         const expires = new Date();
         expires.setDate(expires.getDate() + 7);                                                                                       
-        res.cookie(COOKIE_NAME, token, {path: "/", domain: "localhost", expires, httpOnly: true, signed: true});
+        const isProduction = process.env.NODE_ENV === "production";
+
+        res.cookie(COOKIE_NAME, token, {
+            path: "/",
+            httpOnly: true,
+            secure: isProduction,
+            sameSite: isProduction ? "none" : "lax",
+            expires,
+            signed: true,
+        });
         return res.status(200).json({message: "Logged in successfully", user: existingUser})
     }catch(err){
         console.log(err);
@@ -85,13 +100,15 @@ export const logoutUser =  async (req: Request, res:Response, next:NextFunction)
         const user = await User.findById(res.locals.jwtData.id);
         if(!user) return res.status(401).json({message: "User not found"});
         if(user._id.toString() !== res.locals.jwtData.id) return res.status(401).json({message: "Permission denied"});
-        res.clearCookie(COOKIE_NAME,{
-            httpOnly: true,
+        const isProduction = process.env.NODE_ENV === "production";
+
+        res.clearCookie(COOKIE_NAME, {
             path: "/",
-            domain: "localhost",
-            secure: false,
-            sameSite: "lax"
-        })
+            httpOnly: true,
+            secure: isProduction,
+            sameSite: isProduction ? "none" : "lax",
+            signed: true,
+        });
         return res.status(200).json({message: "OK"});
     } catch (error) {
         console.log(error);
