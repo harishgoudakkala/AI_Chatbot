@@ -9,7 +9,7 @@ import axios from 'axios'
 import { Toaster } from 'react-hot-toast'
 import "katex/dist/katex.min.css";
 
-axios.defaults.baseURL = 'https://ai-chatbot-18wr.onrender.com/api/v1'
+axios.defaults.baseURL = '/api/v1'
 axios.defaults.withCredentials = true
 
 const styles = createTheme({
